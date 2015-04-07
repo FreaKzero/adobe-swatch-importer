@@ -25,6 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+//+todo: custom throw
+
 /**
  * SwatchImporter Module
  * @module SwatchImporter
@@ -33,10 +35,26 @@ THE SOFTWARE.
 define(function(require, exports, module) {
 
     /**
+     * Exception - Will be used in _readHead when parsed Versionnumbers are wrong
+     * @param {String} message ErrorMessage
+     * @method wrongFormatException
+     * @module  SwatchImporter
+     * 
+     */
+    function wrongFormatException(message) {
+        this.name = 'wrongFormatError';
+        this.message = (message || '');
+    }
+
+    wrongFormatException.prototype = Error.prototype;
+
+    /**
      * rgb2Hash Helper
      *
+     * @method  rgb2Hash
      * @param  {Array} array array with rgb values [r,g,b]
      * @return {String} Hex Hash
+     * @module  SwatchImporter
      * @private
      */
     function rgb2Hash(array) {
@@ -159,7 +177,7 @@ define(function(require, exports, module) {
             ];
 
         } else if (this.swatchType === 'ase') {
-            // base 0.1 - 1.0 Float        
+            // base 0.1 - 1.0 Float
             b = 255 * k;
 
             this.rgb = [
@@ -178,7 +196,7 @@ define(function(require, exports, module) {
  *
  * @method hsb
  * @param  {String} name Name of Color
- * @param  {Number} h Hue - 65536 based Number, converted to 0.1 - 1 value where 1 is 360° 
+ * @param  {Number} h Hue - 65536 based Number, converted to 0.1 - 1 value where 1 is 360°
  * @param  {Number} s Saturation - 65536 based Number, converted to 0.1 - 1 where 1 is 100%
    @param  [Number} v Value/Brightness - 65536 based Number, converted to 0.1 - 1 where 1 is 100%
  */
@@ -223,7 +241,7 @@ define(function(require, exports, module) {
         }
 
         this.name = name;
-        this.originformat = 'HSB';
+        this.originformat = this.originformat = this.swatchType.toUpperCase() + 'HSB';
         this.origin = [h, s, b];
         this.rgb = HSVtoRGB(h, s, b);
         this.hash = rgb2Hash(this.rgb);
@@ -232,7 +250,7 @@ define(function(require, exports, module) {
 
     /**
      * AcoImport Class
-     *     
+     *
      * @class AcoImport
      * @private
      * @constructor
@@ -281,6 +299,7 @@ define(function(require, exports, module) {
      * @param  {jDataView Object} a Data Container
      * @return {Bool} True when Version fits (2), false when not
      * @private
+     * @throws {wrongformatException} if Versionnumer is not 2
      */
     AcoImport.prototype._readHead = function(a) {
         this.amount = a.getInt8(3);
@@ -288,8 +307,7 @@ define(function(require, exports, module) {
         this.byteIndex = (this.amount * 10) + 9;
 
         if (a.getInt8(versionIndex) !== 2) {
-            //todo: throw Data Format not valid
-            return false;
+            throw new wrongFormatException('Given binary data is not in an valid ACO Format');
         }
 
         return true;
@@ -445,13 +463,13 @@ define(function(require, exports, module) {
      * @param  {jDataView Object} a Data Container
      * @return {Bool} True when Format fits (first 4 Byte ASEF) False when not
      * @private
+     * @throws {wrongFormatException} If first 4 Bytes are not the ASEF String
      */
     AseImport.prototype._readHead = function(data) {
         var format = data.getString(4, 0);
 
         if (format !== 'ASEF') {
-            //todo: throw 
-            return false;
+            throw new wrongFormatException('Given binary data is not in an valid ASE Format');
         }
 
         this.version = data.getUint16(4) + data.getUint16(6);
