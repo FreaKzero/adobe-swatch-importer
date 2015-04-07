@@ -28,3 +28,5 @@ var data = jDataView(rawData);
 var importer = SwatchImporter('aco');
 var palette = importer.getColors(data);
 ```
+
+Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license
