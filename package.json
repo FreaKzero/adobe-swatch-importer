@@ -1,7 +1,7 @@
 {
   "name": "adobe-swatch-importer",
   "version": "1.0.0",
-  "description": "Adobe ACO/ASE Swatch Importer for: RGB, CMYK and HSV",
+  "description": "requireJS Module for parsing and converting ACO/ASE Swatch Palettes in RGB Hashes (Supported: RGB, CMYK, HSV)",
   "author": "Thomas Petrovic <pete@freakzero.com>", 
 
   "devDependencies": {
