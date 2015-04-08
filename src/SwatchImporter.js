@@ -308,7 +308,7 @@ define(function(require, exports, module) {
      */
     AcoImport.prototype._readHead = function(a) {
         try {
-            var count = a.getInt8(3);
+            var count = a.getInt16(2);
             var versionIndex = (count * 10) + 5;
             
             if (a.getInt8(versionIndex) !== 2) {

@@ -48,7 +48,7 @@ try {
 ```
 
 ##Todo##
-- Investigating if Colorspacebytereading is implemented right
+- CMYK Black Inverted convert Problem (only ASE)
 - LAB Converters/Support for LAB Colorspace
 - Converted and Skipped count in instance result
 - Swatchname utf-8 decode \uXXXX sequence
