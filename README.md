@@ -1,9 +1,10 @@
 ##adobe-swatch-importer##
-
 *WORK IN PROGRESS*  
 requireJS Module for parsing and converting ACO/ASE Swatch Palettes in RGB Hashes (Supported: RGB, CMYK, HSV)
 
 The module awaits jDataView (https://github.com/jDataView/jDataView) Objects due to BigEndian support for binary Files.
+
+![Demo Gif Animation](demo.gif)
 
 Get Instance of Importer Class:  
 <code>var instance = Swatchimporter(*Swatchfile format*)</code>
