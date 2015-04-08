@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 
         uglify: {
             options: {
-                banner: '/*! <%= pkg.name %> <%= pkg.version %> Copyright (C) 2015, Thomas Petrovic <pete@freakzero.com> \n Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license */ \n'
+                banner: '/*! <%= pkg.name %> <%= pkg.version %> Copyright (C) 2015, Thomas Petrovic <pete@freakzero.com> \n Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license */'
             },
 
             main: {

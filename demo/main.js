@@ -9,24 +9,42 @@ requirejs.config({
 
 require(['jquery', 'jDataView', 'SwatchImporter'], function($, jDataView, SwatchImporter) {
 
-    $('#inputfile').on('change', function(changeEvent) {
+    $('#inputfile').on('change', function() {
         var fr = new FileReader();
+        var mode = $('#type > option:selected').text();
 
-        fr.onloadend = function() {
-            // Set Palette globally
-            var aco = SwatchImporter('aco');
-            var data = new jDataView(this.result);
-            var palette = aco.getColors(data);
-            var str = "";
+        fr.onloadend = function() {            
+            var palette = null;
             
-            for (var c in palette) {
-                str +='<div style=" float:left; margin-right: 15px; height: 100px; width: 100px; background: ' + palette[c].hash + '">' + palette[c].name + '</div>'
+            try {
+                var importer = SwatchImporter(mode);
+                var data = new jDataView(this.result);
+                 palette= importer.getColors(data);
+                 
+            } catch(e) {
+                $('#error').text(e.message).fadeIn('slow');
+                $('#colors').empty().hide();
+                $('#result').text(' ').hide();
             }
 
-            $('#colors').hide().html(str).fadeIn('slow');
+            if (palette) {
+
+                $('#error').hide();
+                var str = '';
+                
+                for (var c in palette) {
+                    str += '<div class="block"><div class="swatch" style="background-color:'+ palette[c].hash +';"></div>'+ palette[c].name +'</div>';
+                }
+
+                $('#colors').fadeOut('fast', function() {
+                    $(this).html(str).fadeIn('slow');
+                });
+
+                $('#result').text(JSON.stringify(importer, null, 2)).fadeIn('slow');
+            }
         };
 
         fr.readAsArrayBuffer(this.files[0]);
-    })
+    });
 
 });

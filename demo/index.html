@@ -2,14 +2,76 @@
 <html>
 <head>
 	<meta charset="UTF-8">	
+
+<style type="text/css">
+.swatch {
+	width: 90px;
+	height: 90px;
+	border-radius: 3px;
+	margin: 5px 0 5px 5px;
+}
+
+.block {
+	display: inline-block;
+	width: 100px;
+	min-height	: 120px;
+	margin: 1em;	
+	font-size: 12px;
+	font-family: Arial;
+	text-align: center;
+	background-color: #efefef;
+	border-bottom: 1px solid #bababa;
+	border-right: 1px solid #bababa;
+}
+
+#result {
+	background-color: #222222;
+	width: 480px;
+	height: 180px;
+	overflow-x: hidden;
+	overflow-y: scroll;	
+	padding: 10px;
+	color: #f8f8f2;
+	white-space: pre;
+	font-family: Monospace;
+	display:none;
+	font-size: 12px;
+
+}
+
+#error {
+	padding: 15px;
+	width: 470px;
+	height: 20px;
+	background-color: #ffc5c5;
+	border: 1px solid #9f5050;
+	color: #9f5050;;
+	border-radius: 3px;
+	display:none;
+	margin-top: 20px;
+}
+</style>
 </head>
 
 <body>
+<h1>Parse an ACO or ASE File</h1>
+
+<label for="type">Type of Container</label>
+<select id="type">
+	<option>aco</option>
+	<option>ase</option>
+</select>
+<br />
+<br />
+
 	<input type="file" id="inputfile" />
-<br />
-<br />
-	<script type="text/javascript" src="require.min.js" data-main="main.js"></script>	
+	
+	<div id="error"></div>
 	<div id="colors" width="90%"></div>
+	<br />
+	<div id="result" width="90%"></div>
+
+	<script type="text/javascript" src="require.min.js" data-main="main.js"></script>		
 </body>
 
 </html> 

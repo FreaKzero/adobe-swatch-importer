@@ -102,10 +102,10 @@ define(function(require, exports, module) {
 
         /**
          * SWATCHTYPE COLORSPACE (ex.: ACO RGB)
-         * @property originformat
+         * @property originFormat
          * @type {String}
          */
-        this.originformat;
+        this.originFormat;
 
         /**
          * Array with rgb Values
@@ -133,7 +133,7 @@ define(function(require, exports, module) {
      */
     Color.prototype.rgb = function(name, r, g, b) {
         this.name = name;
-        this.originformat = this.swatchType.toUpperCase() + ' RGB';
+        this.originFormat = this.swatchType.toUpperCase() + ' RGB';
         this.origin = [r, g, b, 0];
 
         if (this.swatchType === 'aco') {
@@ -161,7 +161,7 @@ define(function(require, exports, module) {
     Color.prototype.cmyk = function(name, c, m, y, k) {
         var b;
         this.name = name;
-        this.originformat = this.swatchType.toUpperCase() + ' CMYK';
+        this.originFormat = this.swatchType.toUpperCase() + ' CMYK';
         this.origin = [c, m, y, k];
         if (this.swatchType === 'aco') {
             // base 65535 Integer
@@ -238,7 +238,7 @@ define(function(require, exports, module) {
         }
 
         this.name = name;
-        this.originformat = this.originformat = this.swatchType.toUpperCase() + 'HSB';
+        this.originFormat = this.originFormat = this.swatchType.toUpperCase() + 'HSB';
         this.origin = [h, s, b];
         this.rgb = HSVtoRGB(h, s, b);
         this.hash = rgb2Hash(this.rgb);
@@ -287,6 +287,14 @@ define(function(require, exports, module) {
          * @type {Number}
          */
         this.byteIndex = 0;
+
+        /**
+         * Error indicator
+         * @type {Boolean}
+         * @property {Bool} error
+         * @default false
+         */
+        this.error = false;
     };
 
     /**
@@ -300,16 +308,19 @@ define(function(require, exports, module) {
      */
     AcoImport.prototype._readHead = function(a) {
         try {
-
-            this.amount = a.getInt8(3);
-            var versionIndex = (this.amount * 10) + 5;
-            this.byteIndex = (this.amount * 10) + 9;
-
+            var count = a.getInt8(3);
+            var versionIndex = (count * 10) + 5;
+            
             if (a.getInt8(versionIndex) !== 2) {
+                this.error = true;
                 throw new wrongFormatException('Given binary data is not in an valid ACO Format');
             }
 
+            this.amount = count;            
+            this.byteIndex = (count * 10) + 9;
+
         } catch (e) {
+            this.error = true;
             throw new wrongFormatException('Given binary data is not in an valid ACO Format');
         }
 
@@ -415,6 +426,7 @@ define(function(require, exports, module) {
 
         } catch (e) {
             console.error(e.consoleoutput);
+            throw e;
         }
     };
 
@@ -460,6 +472,14 @@ define(function(require, exports, module) {
          * @type {Number}
          */
         this.byteIndex = 0;
+
+        /**
+         * Error indicator
+         * @type {Boolean}
+         * @property {Bool} error
+         * @default false
+         */
+        this.error = false;
     }
 
     /**
@@ -478,9 +498,11 @@ define(function(require, exports, module) {
             this.amount = data.getUint32(8);
             this.byteIndex = 16;
             if (format !== 'ASEF') {
+                this.error = true;
                 throw new wrongFormatException('Given binary data is not in an valid ASE Format');
             }
         } catch (e) {
+            this.error = true;
             throw new wrongFormatException('Given binary data is not in an valid ASE Format');
         }
     };
@@ -552,6 +574,7 @@ define(function(require, exports, module) {
             return this.colors;
         } catch (e) {
             console.error(e.consoleoutput);
+            throw e;
         }
     };
 
