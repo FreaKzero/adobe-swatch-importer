@@ -1,6 +1,4 @@
 /* jslint -W030, unused: false */
-/* globals jDataView */
-
 /*
 The MIT License (MIT)
 
@@ -25,8 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-//+todo: custom throw
-
 /**
  * SwatchImporter Module
  * @module SwatchImporter
@@ -39,11 +35,12 @@ define(function(require, exports, module) {
      * @param {String} message ErrorMessage
      * @method wrongFormatException
      * @module  SwatchImporter
-     * 
+     *
      */
     function wrongFormatException(message) {
         this.name = 'wrongFormatError';
         this.message = (message || '');
+        this.consoleoutput = '[' + this.name + '] ' + this.message;
     }
 
     wrongFormatException.prototype = Error.prototype;
@@ -302,11 +299,17 @@ define(function(require, exports, module) {
      * @throws {wrongformatException} if Versionnumer is not 2
      */
     AcoImport.prototype._readHead = function(a) {
-        this.amount = a.getInt8(3);
-        var versionIndex = (this.amount * 10) + 5;
-        this.byteIndex = (this.amount * 10) + 9;
+        try {
 
-        if (a.getInt8(versionIndex) !== 2) {
+            this.amount = a.getInt8(3);
+            var versionIndex = (this.amount * 10) + 5;
+            this.byteIndex = (this.amount * 10) + 9;
+
+            if (a.getInt8(versionIndex) !== 2) {
+                throw new wrongFormatException('Given binary data is not in an valid ACO Format');
+            }
+
+        } catch (e) {
             throw new wrongFormatException('Given binary data is not in an valid ACO Format');
         }
 
@@ -350,66 +353,69 @@ define(function(require, exports, module) {
      * @return {Array} Array with Color Objects inside
      */
     AcoImport.prototype.getColors = function(data) {
-        var step, cs;
+        var step;
 
-        if (!this._readHead(data)) {
-            return [];
-        }
+        try {
+            this._readHead(data);
 
-        for (var i = 0; i < this.amount; i++) {
-            step = this.byteIndex;
+            for (var i = 0; i < this.amount; i++) {
+                step = this.byteIndex;
 
-            var color = null,
+                var color = null,
 
-                //#TODO: investigate - really Int8 ?
-                colorspace = this.getColorSpace(data.getInt8(step)),
-                fnlen = data.getInt32(step + 9) * 2,
-                fieldname = data.getString(fnlen, step + 12);
+                    //#TODO: investigate - really Int8 ?
+                    colorspace = this.getColorSpace(data.getInt8(step)),
+                    fnlen = data.getInt32(step + 9) * 2,
+                    fieldname = data.getString(fnlen, step + 12);
 
-            switch (colorspace) {
-                case 'RGB':
-                    color = new Color('aco');
-                    color.rgb(
-                        fieldname,
-                        data.getUint16(step + 1),
-                        data.getUint16(step + 3),
-                        data.getUint16(step + 5)
-                    );
-                    break;
+                switch (colorspace) {
+                    case 'RGB':
+                        color = new Color('aco');
+                        color.rgb(
+                            fieldname,
+                            data.getUint16(step + 1),
+                            data.getUint16(step + 3),
+                            data.getUint16(step + 5)
+                        );
+                        break;
 
-                case 'CMYK':
-                    color = new Color('aco');
-                    color.cmyk(
-                        fieldname,
-                        data.getUint16(step + 1),
-                        data.getUint16(step + 3),
-                        data.getUint16(step + 5),
-                        data.getUint16(step + 7)
-                    );
-                    break;
+                    case 'CMYK':
+                        color = new Color('aco');
+                        color.cmyk(
+                            fieldname,
+                            data.getUint16(step + 1),
+                            data.getUint16(step + 3),
+                            data.getUint16(step + 5),
+                            data.getUint16(step + 7)
+                        );
+                        break;
 
-                case 'HSB':
-                    color = new Color('aco');
-                    color.hsb(
-                        fieldname,
-                        data.getUint16(step + 1),
-                        data.getUint16(step + 3),
-                        data.getUint16(step + 5)
-                    );
-                    break;
-                default:
-                    console.log('Colorspace ' + colorspace + ' not supported - skipping Color');
-                    break;
+                    case 'HSB':
+                        color = new Color('aco');
+                        color.hsb(
+                            fieldname,
+                            data.getUint16(step + 1),
+                            data.getUint16(step + 3),
+                            data.getUint16(step + 5)
+                        );
+                        break;
+                    default:
+                        console.log('Colorspace ' + colorspace + ' not supported - skipping Color');
+                        break;
+                }
+
+                if (color !== null) {
+                    this.colors.push(color);
+                }
+                // Skipping dynamic Text bytes and additional 14 for the things we already processed
+                this.byteIndex = this.byteIndex + fnlen + 14;
             }
 
-            if (color !== null) {
-                this.colors.push(color);
-            }
-            // Skipping dynamic Text bytes and additional 14 for the things we already processed
-            this.byteIndex = this.byteIndex + fnlen + 14;
-        }
+            return this.colors;
 
-        return this.colors;
+        } catch (e) {
+            console.error(e.consoleoutput);
+        }
     };
 
     /**
@@ -466,17 +472,17 @@ define(function(require, exports, module) {
      * @throws {wrongFormatException} If first 4 Bytes are not the ASEF String
      */
     AseImport.prototype._readHead = function(data) {
-        var format = data.getString(4, 0);
-
-        if (format !== 'ASEF') {
+        try {
+            var format = data.getString(4, 0);
+            this.version = data.getUint16(4) + data.getUint16(6);
+            this.amount = data.getUint32(8);
+            this.byteIndex = 16;
+            if (format !== 'ASEF') {
+                throw new wrongFormatException('Given binary data is not in an valid ASE Format');
+            }
+        } catch (e) {
             throw new wrongFormatException('Given binary data is not in an valid ASE Format');
         }
-
-        this.version = data.getUint16(4) + data.getUint16(6);
-        this.amount = data.getUint32(8);
-        this.byteIndex = 16;
-
-        return true;
     };
 
     /**
@@ -487,62 +493,66 @@ define(function(require, exports, module) {
      * @return {Array} Array with Color Objects inside
      */
     AseImport.prototype.getColors = function(data) {
-        var step, cs;
-        if (!this._readHead(data)) {
-            return [];
-        }
+        var step;
 
-        for (var i = 0; i < this.amount; i++) {
+        try {
 
-            var color = null;
-            step = this.byteIndex;
-            var chunkLen = data.getUint16(step);
-            var fnlen = data.getUint16(step + 2) * 2;
+            this._readHead(data);
 
-            // Skip processed bytes for lengths
-            step = step + 4;
+            for (var i = 0; i < this.amount; i++) {
 
-            var fieldname = data.getString(fnlen, step);
-            var colorspace = data.getString(4, step + fnlen).trim();
+                var color = null;
+                step = this.byteIndex;
+                var chunkLen = data.getUint16(step);
+                var fnlen = data.getUint16(step + 2) * 2;
 
-            // Skip processed Fieldname bytes
-            step = step + fnlen + 4;
+                // Skip processed bytes for lengths
+                step = step + 4;
 
-            switch (colorspace) {
-                // No need for hsv - simply because there is no hsv format for ASE
-                case 'RGB':
-                    color = new Color('ase');
-                    color.rgb(
-                        fieldname,
-                        data.getFloat32(step),
-                        data.getFloat32(step + 4),
-                        data.getFloat32(step + 8)
-                    );
-                    break;
+                var fieldname = data.getString(fnlen, step);
+                var colorspace = data.getString(4, step + fnlen).trim();
 
-                case 'CMYK':
-                    color = new Color('ase');
-                    color.cmyk(
-                        fieldname,
-                        data.getFloat32(step),
-                        data.getFloat32(step + 4),
-                        data.getFloat32(step + 8),
-                        data.getFloat32(step + 10)
-                    );
+                // Skip processed Fieldname bytes
+                step = step + fnlen + 4;
 
-                    break;
+                switch (colorspace) {
+                    // No need for hsv - simply because there is no hsv format for ASE
+                    case 'RGB':
+                        color = new Color('ase');
+                        color.rgb(
+                            fieldname,
+                            data.getFloat32(step),
+                            data.getFloat32(step + 4),
+                            data.getFloat32(step + 8)
+                        );
+                        break;
 
+                    case 'CMYK':
+                        color = new Color('ase');
+                        color.cmyk(
+                            fieldname,
+                            data.getFloat32(step),
+                            data.getFloat32(step + 4),
+                            data.getFloat32(step + 8),
+                            data.getFloat32(step + 10)
+                        );
+
+                        break;
+
+                }
+
+                if (color !== null) {
+                    this.colors.push(color);
+                }
+
+                // 2 = skip String Terminating
+                this.byteIndex = this.byteIndex + chunkLen + 6;
             }
 
-            if (color !== null) {
-                this.colors.push(color);
-            }
-
-            // 2 = skip String Terminating
-            this.byteIndex = this.byteIndex + chunkLen + 6;
+            return this.colors;
+        } catch (e) {
+            console.error(e.consoleoutput);
         }
-
-        return this.colors;
     };
 
     /**
