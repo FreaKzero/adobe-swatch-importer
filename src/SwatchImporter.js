@@ -174,13 +174,11 @@ define(function(require, exports, module) {
             ];
 
         } else if (this.swatchType === 'ase') {
-            // base 0.1 - 1.0 Float
-            b = 255 * (k * 100);
-
+            // base 0.1 - 1.0 Float            
             this.rgb = [
-                255 * (1 - c) * (1 - b),
-                255 * (1 - m) * (1 - b),
-                255 * (1 - y) * (1 - b)
+                255 * (1 - c) * (1 - k),
+                255 * (1 - m) * (1 - k),
+                255 * (1 - y) * (1 - k),
             ];
         }
 
