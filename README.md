@@ -15,12 +15,13 @@ Get back all parseable Colors as Objects:
 SwatchImporter Function returns an Instance with following Attributes:
 ```
 [{  
-    version: "2"                  // Swatchformat Version
-    amount: "1"                   // Amount of Colors
-    colors: [Array]               // All Colorobjects
-    converted: "false"            // Indicator for CMYK Converted Colors (TODO not functioning yet)
-    byteIndex: 0                  // byteIndex dont change (TODO: make private)
-    error: false                  // Parseerror Indicator
+    version: 2                // Swatchformat Version  
+    amount: 1                 // Amount of Colors  
+    colors: [Array]           // All Colorobjects  
+    converted: 0              // Indicator for CMYK converted Colors  
+    skipped: 0                // Indicator for skipped Colors (No Converters, wrong Colorspace)  
+    byteIndex: 0              // byteIndex dont change (TODO: make private)  
+    error: false              // Parseerror Indicator  
 }]  
 ```
 
@@ -30,7 +31,7 @@ getColors() returns an Array of Color() Objects (Example: 1 Color in Swatchfile 
 	swatchType: "ACO",        // From which type converted  
 	name: "Swatch 1",         // Name of Swatch
 	origin: [65535,0,0],      // Colorvalues from Swatchfile  
-	originFormat: "ACO RGB",  // Convertinfo  
+	originFormat: "RGB",      // Convertinfo  
 	rgb: [255,0,0],           // converted values from Swatchfile Colorvalues to rgb  
 	hash: "#FF0000"           // converted hash  
 }]  
@@ -50,15 +51,16 @@ try {
 
 ##Todo##
 - LAB Converters/Support for LAB Colorspace
-- Converted and Skipped count in instance result
-- swatchType should be in main Instance
 
 ##Changelog##
-**11 April 2015**  
-Fixed ASE CMYK Conversion  
-String Encoding
+- **11 April 2015**
+-- Fixed ASE CMYK Conversion
+-- String Encoding
+-- Properties for converted and skipped Colors
+-- Changed originFormat representation
 
-**8 April 2015**  
-First Version, Support for RGB, CMYK and HSV  
+- **8 April 2015**
+-- First Version
+-- Support for RGB, CMYK and HSV
 
 Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license

@@ -47,7 +47,7 @@ define(function(require, exports, module) {
 
     /**
      * Decodes the Strange (malformed ?) UTF8 String
-     * 
+     *
      * @param  {String} string String from jDataView
      * @return {String} decoded String
      */
@@ -57,7 +57,7 @@ define(function(require, exports, module) {
         // 1. Replace Strange \u0000CHAR to CHAR (äöüß is functioning so i hope other foreign chars will also function)
         // 3. Remove Control Char (This is changing each built in Palette im using - so just substring)
         // 4. Trim the String on both Sides (zero-zero terminating, as written in Adobe Spec)
-        
+
         return decodeURIComponent(
             string.replace(/\u0000([^\\]{0,1})/ig, '$1')
             .substring(1)
@@ -121,7 +121,7 @@ define(function(require, exports, module) {
         this.origin;
 
         /**
-         * SWATCHTYPE COLORSPACE (ex.: ACO RGB)
+         * Colorspace String (ex.: RGB)
          * @property originFormat
          * @type {String}
          */
@@ -153,7 +153,7 @@ define(function(require, exports, module) {
      */
     Color.prototype.rgb = function(name, r, g, b) {
         this.name = name;
-        this.originFormat = this.swatchType.toUpperCase() + ' RGB';
+        this.originFormat = 'RGB';
         this.origin = [r, g, b, 0];
 
         if (this.swatchType === 'aco') {
@@ -181,7 +181,7 @@ define(function(require, exports, module) {
     Color.prototype.cmyk = function(name, c, m, y, k) {
         var b;
         this.name = name;
-        this.originFormat = this.swatchType.toUpperCase() + ' CMYK';
+        this.originFormat = 'CMYK';
         this.origin = [c, m, y, k];
         if (this.swatchType === 'aco') {
             // base 65535 Integer
@@ -256,7 +256,7 @@ define(function(require, exports, module) {
         }
 
         this.name = name;
-        this.originFormat = this.originFormat = this.swatchType.toUpperCase() + 'HSB';
+        this.originFormat = 'HSB';
         this.origin = [h, s, b];
         this.rgb = HSVtoRGB(h, s, b);
         this.hash = rgb2Hash(this.rgb);
@@ -282,6 +282,7 @@ define(function(require, exports, module) {
          * Amount of Colors
          * @property amount
          * @type {Number}
+         * @default 0
          */
         this.amount = 0;
 
@@ -289,20 +290,33 @@ define(function(require, exports, module) {
          * Array for Colorobjects
          * @property colors
          * @type {Array}
+         * @default []
          */
         this.colors = [];
 
         /**
-         * Was there an CMYK Conversion during the extract
+         * How many Colors were converted from CMYK to RGB ?
+         *
          * @property converted
-         * @type {Boolean}
+         * @type {Number}
+         * @default 0
          */
-        this.converted = false;
+        this.converted = 0;
+
+        /**
+         * Skipped Colors, no Converter found
+         *
+         * @property skipped
+         * @type {Number}
+         * @default 0
+         */
+        this.skipped = 0;
 
         /**
          * ByteIndex
          * @property byteIndex
          * @type {Number}
+         * @default 0
          */
         this.byteIndex = 0;
 
@@ -409,6 +423,8 @@ define(function(require, exports, module) {
                         break;
 
                     case 'CMYK':
+                        this.converted++;
+
                         color = new Color('aco');
                         color.cmyk(
                             fieldname,
@@ -428,7 +444,9 @@ define(function(require, exports, module) {
                             data.getUint16(step + 5)
                         );
                         break;
+
                     default:
+                        this.skipped++,
                         console.log('Colorspace ' + colorspace + ' not supported - skipping Color');
                         break;
                 }
@@ -568,6 +586,7 @@ define(function(require, exports, module) {
                         break;
 
                     case 'CMYK':
+                        this.converted++;
                         color = new Color('ase');
                         color.cmyk(
                             fieldname,
@@ -577,6 +596,11 @@ define(function(require, exports, module) {
                             data.getFloat32(step + 12)
                         );
 
+                        break;
+
+                    default:
+                        this.skipped++,
+                        console.log('Colorspace ' + colorspace + ' not supported - skipping Color');
                         break;
 
                 }
