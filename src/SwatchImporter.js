@@ -165,7 +165,7 @@ define(function(require, exports, module) {
         this.origin = [c, m, y, k];
         if (this.swatchType === 'aco') {
             // base 65535 Integer
-            b = k / 65535;
+            b = 1 - (k / 65535);
 
             this.rgb = [
                 255 * (1 - (1 - (c / 65535))) * (1 - b),
@@ -175,12 +175,12 @@ define(function(require, exports, module) {
 
         } else if (this.swatchType === 'ase') {
             // base 0.1 - 1.0 Float
-            b = 255 * k;
+            b = 255 * (k * 100);
 
             this.rgb = [
                 255 * (1 - c) * (1 - b),
                 255 * (1 - m) * (1 - b),
-                255 * (1 - y) * (1 - b),
+                255 * (1 - y) * (1 - b)
             ];
         }
 
@@ -553,10 +553,10 @@ define(function(require, exports, module) {
                         color = new Color('ase');
                         color.cmyk(
                             fieldname,
-                            (data.getFloat32(step) * 100) / 100
-                            (data.getFloat32(step + 4) * 100) / 100
-                            (data.getFloat32(step + 8) * 100) / 100
-                            (data.getFloat32(step + 12) * 100) / 100
+                            data.getFloat32(step),
+                            data.getFloat32(step + 4),
+                            data.getFloat32(step + 8),
+                            data.getFloat32(step + 12)
                         );
 
                         break;
