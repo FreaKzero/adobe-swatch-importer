@@ -9,6 +9,10 @@ requirejs.config({
 
 require(['jquery', 'jDataView', 'SwatchImporter'], function($, jDataView, SwatchImporter) {
 
+    $(document).on('click', '.swatch', function() {
+        alert($(this).data('origin'));
+    });
+
     $('#inputfile').on('change', function() {
         var fr = new FileReader();
         var mode = $('#type > option:selected').text();
@@ -31,9 +35,10 @@ require(['jquery', 'jDataView', 'SwatchImporter'], function($, jDataView, Swatch
 
                 $('#error').hide();
                 var str = '';
-                
-                for (var c in palette) {
-                    str += '<div class="block"><div class="swatch" style="background-color:'+ palette[c].hash +';"></div>'+ palette[c].name +'</div>';
+
+                for (var c in palette) {                    
+                    var info = 'C: '+palette[c].origin[0] + '\n' + 'M: '+palette[c].origin[1] + '\n' + 'Y: '+palette[c].origin[2] + '\n' + 'K: '+palette[c].origin[3];
+                    str += '<div class="block"><div class="swatch" data-origin="'+info+'" style="background-color:'+ palette[c].hash +';"></div>'+ palette[c].name +'<br>'+palette[c].hash+'</div>';
                 }
 
                 $('#colors').fadeOut('fast', function() {
