@@ -51,6 +51,7 @@ try {
 
 ##Todo##
 - LAB Converters/Support for LAB Colorspace
+- ASE Colorgrouping (Kuler)  
 
 ##Changelog##
 - **11 April 2015**  
@@ -63,4 +64,5 @@ try {
 -- First Version  
 -- Support for RGB, CMYK and HSV  
 
-Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license
+Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license  
+Adobe is a registered trademark of Adobe Systems Incorporated.
