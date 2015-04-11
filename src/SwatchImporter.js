@@ -342,8 +342,9 @@ define(function(require, exports, module) {
         try {
             var count = a.getInt16(2);
             var versionIndex = (count * 10) + 5;
-
-            if (a.getInt8(versionIndex) !== 2) {
+            this.version = a.getInt8(versionIndex);
+            
+            if (this.version !== 2) {
                 this.error = true;
                 throw new wrongFormatException('Given binary data is not in an valid ACO Format');
             }
@@ -485,6 +486,7 @@ define(function(require, exports, module) {
          * Amount of Colors
          * @property amount
          * @type {Number}
+         * @default 0
          */
         this.amount = 0;
 
@@ -492,6 +494,7 @@ define(function(require, exports, module) {
          * Array for Colorobjects
          * @property colors
          * @type {Array}
+         * @default []
          */
         this.colors = [];
 
@@ -517,6 +520,7 @@ define(function(require, exports, module) {
          * ByteIndex
          * @property byteIndex
          * @type {Number}
+         * @default 0
          */
         this.byteIndex = 0;
 
