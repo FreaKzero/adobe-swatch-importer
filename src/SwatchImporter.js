@@ -59,7 +59,7 @@ define(function(require, exports, module) {
         // 3. Trim the String on both Sides (zero-zero terminating, as written in Adobe Spec)
         return decodeURIComponent(
             string.replace(/\u0000([^\\]{0,1})/ig, '$1')
-            .replace(/\u0000/ig, '')
+            .replace(/\u0000/ig, ' ')
             .replace(/^\s+|\s+$/g, '')
             
         );
@@ -543,11 +543,20 @@ define(function(require, exports, module) {
      * @throws {wrongFormatException} If first 4 Bytes are not the ASEF String
      */
     AseImport.prototype._readHead = function(data) {
-        try {
+        try {            
             var format = data.getString(4, 0);
             this.version = data.getUint16(4) + data.getUint16(6);
             this.amount = data.getUint32(8);
-            this.byteIndex = 16;
+
+            if (data.getUint8(12) === 192) {
+                this.amount = this.amount - 2;
+                var pnl = data.getUint16(16);
+                //var palettename = decodeUtfString(data.getString(pnl,18));                
+                this.byteIndex = 16 + pnl + 6;
+            } else {
+                this.byteIndex = 16;
+            }
+            
             if (format !== 'ASEF') {
                 this.error = true;
                 throw new wrongFormatException('Given binary data is not in an valid ASE Format');
@@ -583,8 +592,8 @@ define(function(require, exports, module) {
                 step = step + 4;
 
                 var fieldname = decodeUtfString(data.getString(fnlen, step));
+                console.log(step);
                 var colorspace = data.getString(4, step + fnlen).trim();
-
                 // Skip processed Fieldname bytes
                 step = step + fnlen + 4;
 
