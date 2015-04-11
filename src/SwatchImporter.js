@@ -55,13 +55,13 @@ define(function(require, exports, module) {
         // I have really no fucking idea what this String should be, just doing the obvious here
 
         // 1. Replace Strange \u0000CHAR to CHAR (äöüß is functioning so i hope other foreign chars will also function)
-        // 3. Remove Control Char (This is changing each built in Palette im using - so just substring)
-        // 4. Trim the String on both Sides (zero-zero terminating, as written in Adobe Spec)
-
+        // 2. Change last \u0000 to a Space
+        // 3. Trim the String on both Sides (zero-zero terminating, as written in Adobe Spec)
         return decodeURIComponent(
             string.replace(/\u0000([^\\]{0,1})/ig, '$1')
-            .substring(1)
+            .replace(/\u0000/ig, '')
             .replace(/^\s+|\s+$/g, '')
+            
         );
     }
 
@@ -409,7 +409,7 @@ define(function(require, exports, module) {
                     //#TODO: investigate - really Int8 ?
                     colorspace = this.getColorSpace(data.getInt8(step)),
                     fnlen = data.getInt32(step + 9) * 2,
-                    fieldname = decodeUtfString(data.getString(fnlen, step + 12));
+                    fieldname = decodeUtfString(data.getString(fnlen, step + 13));
 
                 switch (colorspace) {
                     case 'RGB':
