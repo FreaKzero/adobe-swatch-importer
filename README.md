@@ -15,12 +15,12 @@ Get back all parseable Colors as Objects:
 SwatchImporter Function returns an Instance with following Attributes:
 ```
 [{  
-	version: "2"				// Swatchformat Version
-    amount: "1"				 // Amount of Colors
-    colors: [Array]			 // All Colorobjects
-    converted: "false"		  // Indicator for CMYK Converted Colors (TODO not functioning yet)
-    byteIndex: 0				// byteIndex dont change (TODO: make private)
-    error: false				// Parseerror Indicator
+    version: "2"                  // Swatchformat Version
+    amount: "1"                   // Amount of Colors
+    colors: [Array]               // All Colorobjects
+    converted: "false"            // Indicator for CMYK Converted Colors (TODO not functioning yet)
+    byteIndex: 0                  // byteIndex dont change (TODO: make private)
+    error: false                  // Parseerror Indicator
 }]  
 ```
 
@@ -28,7 +28,7 @@ getColors() returns an Array of Color() Objects (Example: 1 Color in Swatchfile 
 ```
 [{  
 	swatchType: "ACO",        // From which type converted  
-	name: "Swatch 1",         // Name of Swatch  (TODO: encode \uXXXX sequence)
+	name: "Swatch 1",         // Name of Swatch
 	origin: [65535,0,0],      // Colorvalues from Swatchfile  
 	originFormat: "ACO RGB",  // Convertinfo  
 	rgb: [255,0,0],           // converted values from Swatchfile Colorvalues to rgb  
@@ -55,7 +55,7 @@ try {
 
 ##Changelog##
 **11 April 2015**  
-Fixed ASE CMYK Conversion
+Fixed ASE CMYK Conversion  
 String Encoding
 
 **8 April 2015**  
