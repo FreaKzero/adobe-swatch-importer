@@ -496,11 +496,22 @@ define(function(require, exports, module) {
         this.colors = [];
 
         /**
-         * Was there an CMYK Conversion during the extract
+         * How many Colors were converted from CMYK to RGB ?
+         *
          * @property converted
-         * @type {Boolean}
+         * @type {Number}
+         * @default 0
          */
-        this.converted = false;
+        this.converted = 0;
+
+        /**
+         * Skipped Colors, no Converter found
+         *
+         * @property skipped
+         * @type {Number}
+         * @default 0
+         */
+        this.skipped = 0;
 
         /**
          * ByteIndex
