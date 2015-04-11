@@ -65,3 +65,4 @@ try {
 -- Support for RGB, CMYK and HSV  
 
 Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license
+Adobe is a registered trademark of Adobe Systems Incorporated.
