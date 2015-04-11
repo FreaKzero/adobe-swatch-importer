@@ -16,24 +16,12 @@ module.exports = function(grunt) {
             },
 
             main: {
-
-                options: {
-                    sourceMap: true,
-                    sourceMapName: 'dist/SwatchImporter.map'
-                },
-
                 files: {
                     'dist/SwatchImporter.min.js': ['src/SwatchImporter.js'],
                 }
             },
 
             dev: {
-
-                options: {
-                    sourceMap: true,
-                    sourceMapName: 'demo/lib/SwatchImporter.map'
-                },
-
                 files: {
                     'demo/lib/SwatchImporter.min.js': ['src/SwatchImporter.js']
                 }
