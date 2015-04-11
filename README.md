@@ -53,14 +53,14 @@ try {
 - LAB Converters/Support for LAB Colorspace
 
 ##Changelog##
-- **11 April 2015**
--- Fixed ASE CMYK Conversion
--- String Encoding
--- Properties for converted and skipped Colors
--- Changed originFormat representation
+- **11 April 2015**  
+-- Fixed ASE CMYK Conversion  
+-- String Encoding  
+-- Properties for converted and skipped Colors  
+-- Changed originFormat representation  
 
-- **8 April 2015**
--- First Version
--- Support for RGB, CMYK and HSV
+- **8 April 2015**  
+-- First Version  
+-- Support for RGB, CMYK and HSV  
 
 Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license
