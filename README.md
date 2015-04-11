@@ -49,13 +49,14 @@ try {
 ```
 
 ##Todo##
-- CMYK Black Inverted convert Problem (only ASE)
 - LAB Converters/Support for LAB Colorspace
 - Converted and Skipped count in instance result
-- Swatchname utf-8 decode \uXXXX sequence
 - swatchType should be in main Instance
 
 ##Changelog##
+**11 April 2015**  
+Fixed ASE CMYK Conversion
+String Encoding
 
 **8 April 2015**  
 First Version, Support for RGB, CMYK and HSV  

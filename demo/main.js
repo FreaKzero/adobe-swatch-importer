@@ -40,6 +40,7 @@ require(['jquery', 'jDataView', 'SwatchImporter'], function($, jDataView, Swatch
                     var info = 'C: '+palette[c].origin[0] + '\n' + 'M: '+palette[c].origin[1] + '\n' + 'Y: '+palette[c].origin[2] + '\n' + 'K: '+palette[c].origin[3];
                     info += '\n' + palette[c].rgb[0] + '/' + palette[c].rgb[1] + '/' + palette[c].rgb[2];
                     str += '<div class="block"><div class="swatch" data-origin="'+info+'" style="background-color:'+ palette[c].hash +';"></div>'+ palette[c].name +'<br>'+palette[c].hash+'</div>';
+                    $('body').append('<input type="text" value="'+palette[c].name+'"/>');
                 }
 
                 $('#colors').fadeOut('fast', function() {

@@ -45,6 +45,21 @@ define(function(require, exports, module) {
 
     wrongFormatException.prototype = Error.prototype;
 
+    //#todo: doc
+    function decodeUtfString(string) {
+        // I have really no fucking idea what this String should be, just doing the obvious here
+        
+        // 1. Replace Strange \u0000CHAR to CHAR
+        // 3. Remove Control Char (This is changing each built in Palette im using - so just substring)
+        // 4. Trim the String on both Sides (zero-zero terminating, as written in Adobe Spec)
+        
+        return decodeURIComponent(
+            string.replace(/\u0000([^\\]{0,1})/ig, '$1')
+            .substring(1)
+            .replace(/^\s+|\s+$/g, '')
+        );
+    }
+
     /**
      * rgb2Hash Helper
      *
@@ -308,13 +323,13 @@ define(function(require, exports, module) {
         try {
             var count = a.getInt16(2);
             var versionIndex = (count * 10) + 5;
-            
+
             if (a.getInt8(versionIndex) !== 2) {
                 this.error = true;
                 throw new wrongFormatException('Given binary data is not in an valid ACO Format');
             }
 
-            this.amount = count;            
+            this.amount = count;
             this.byteIndex = (count * 10) + 9;
 
         } catch (e) {
@@ -375,7 +390,7 @@ define(function(require, exports, module) {
                     //#TODO: investigate - really Int8 ?
                     colorspace = this.getColorSpace(data.getInt8(step)),
                     fnlen = data.getInt32(step + 9) * 2,
-                    fieldname = data.getString(fnlen, step + 12);
+                    fieldname = decodeUtfString(data.getString(fnlen, step + 12));
 
                 switch (colorspace) {
                     case 'RGB':
@@ -529,13 +544,13 @@ define(function(require, exports, module) {
                 // Skip processed bytes for lengths
                 step = step + 4;
 
-                var fieldname = data.getString(fnlen, step);
+                var fieldname = decodeUtfString(data.getString(fnlen, step));
                 var colorspace = data.getString(4, step + fnlen).trim();
 
                 // Skip processed Fieldname bytes
                 step = step + fnlen + 4;
 
-                switch (colorspace) {
+                switch (colorspace) { 
                     // No need for hsv - simply because there is no hsv format for ASE
                     case 'RGB':
                         color = new Color('ase');
