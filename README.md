@@ -51,7 +51,7 @@ try {
 
 ##Todo##
 - LAB Converters/Support for LAB Colorspace
-- ASE Colorgrouping (Kuler)  
+- Proper Support for ASE Swatch Grouping (For now there is just simple Kuler support)
 
 ##Changelog##
 - **11 April 2015**  
@@ -59,6 +59,7 @@ try {
 -- String Encoding  
 -- Properties for converted and skipped Colors  
 -- Changed originFormat representation  
+-- Kuler ASE Swatchgrouping Hack  
 
 - **8 April 2015**  
 -- First Version  
