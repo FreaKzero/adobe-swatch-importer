@@ -1,5 +1,5 @@
 {
 	"launch_in_dev": ["firefox"],
-	"test_page": "test/index.html",
+	"test_page": "test/testem.html",
 	"src_files": "test/tests/*"
 }
